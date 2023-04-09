@@ -46,18 +46,20 @@
   }
 </script>
 
-<button type="button" on:click={runit}>Submit</button>
-<pre id="output" />
 
-<div class="fixed bottom-0 left-0 w-full h-1/3">
+
+<div class="relative bottom-0 left-0 w-full h-1/3">
+  <div class="h-[70vh]">hi</div>
   <CodeMirror
     bind:value
     theme={oneDark}
     styles={{
       "&": {
         width: "100%",
-        height: "20rem",
+        height: "30vh",
       },
     }}
   />
+  <button class=" absolute bottom-0 right-5 text-white z-10" type="button" on:click={runit}>Submit</button>
+<pre id="output" />
 </div>
