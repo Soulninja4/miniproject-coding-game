@@ -1,0 +1,55 @@
+<script>
+  import PythonTerminalTest from "../components/PythonTerminalTest.svelte";
+  import PythonTerminal from "../components/PythonTerminal.svelte";
+
+
+  ;(function () {
+  // const canvas = document.getElementById('gameCanvas')
+  // const ctx = canvas.getContext('2d')
+    let canvas, ctx;
+
+  
+// setup config variables and start the program
+function init () {
+  // set our config variables
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'red';
+  ctx.beginPath();
+  ctx.moveTo(100,100,100,100);
+  ctx.strokeRect(50, 35, 450, 450);
+
+  ctx.beginPath();
+  ctx.fillRect(125, 35, 50, 50);
+}
+
+// wait for the HTML to load
+document.addEventListener('DOMContentLoaded', init)
+
+})()
+
+
+
+</script>
+
+<style>
+  body {
+  background: #111;
+  color: #f8f8f8;
+}
+canvas {
+  width: 90%;
+  /* height: 0; */
+  background: #f8f8f8;
+  padding: 0;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  display: block;
+}
+</style>
+<body>
+  
+  <canvas id="gameCanvas"></canvas>
+  <!-- <PythonTerminalTest /> -->
+  
+</body>

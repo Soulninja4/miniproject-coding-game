@@ -1,0 +1,54 @@
+<script>
+  import PythonTerminalTest from "../components/PythonTerminalTest.svelte";
+  import PythonTerminal from "../components/PythonTerminal.svelte";
+  import {onMount, tick} from "svelte";
+
+  const width = screen.width * 0.9;
+  const height = screen.height * 2 / 3;
+  let canvas, ctx;
+
+  var x = 0;
+  
+  const draw = () => {
+    x += 1
+    ctx.clearRect(0, 0, width, height);
+    ctx.beginPath();
+    ctx.moveTo(width/2 + x, height/2);
+    ctx.arc(width/2, height/2, 50, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  onMount(async () => {
+    ctx = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+    await tick()
+    draw();
+  });
+
+
+
+</script>
+
+<style>
+  body {
+    background: #111;
+  color: #f8f8f8;
+  }
+  .container {
+    width: 90%;
+    height: 10%;
+  }
+</style>
+
+<div
+  class="container"
+  >
+  <canvas bind:this={canvas} {width} {height} />
+</div>
+<body>
+  
+  <canvas id="gameCanvas"></canvas>
+  <PythonTerminalTest />
+  
+</body>

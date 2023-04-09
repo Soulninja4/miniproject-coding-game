@@ -1,0 +1,67 @@
+<script>
+  import PythonTerminalTest from "../components/PythonTerminalTest.svelte";
+  import PythonTerminal from "../components/PythonTerminal.svelte";
+  import { onMount, tick } from "svelte";
+
+  const width = screen.width * 0.9;
+  const height = (screen.height * 2) / 3;
+  let canvas, ctx;
+
+  var x = 0;
+
+  const draw = () => {
+    // setInterval(() => {
+      x += 1;
+      // ctx.clearRect(0, 0, width, height);
+      ctx.beginPath();
+      ctx.fillStyle = "red";
+      ctx.moveTo(width / 2 + x, height / 2);
+      // ctx.arc(width/2, height/2, 50, 0, 2 * Math.PI);
+      ctx.fillRect(width / 2 + x, height / 2, 50, 50);
+      console.log("yo");
+    // }, 1);
+  };
+
+  onMount(async () => {
+    canvas = document.getElementById("gameCanvas");
+    ctx = canvas.getContext("2d");
+    // ctx.fillStyle = "black";
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    canvas.width = width;
+    canvas.height = height;
+    await tick();
+    animate();
+
+    
+  });
+
+  function animate() {
+    window.requestAnimationFrame(animate);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    draw();
+    // player.update();
+  }
+</script>
+
+<!-- <div
+  class="container"
+  >
+  <canvas bind:this={canvas} {width} {height} />
+</div> -->
+<body>
+  <canvas id="gameCanvas" />
+  <PythonTerminalTest />
+</body>
+
+<style>
+  /* body {
+    background: #111;
+  color: #f8f8f8;
+  } */
+  /* .container {
+    width: 90%;
+    height: 10%;
+  } */
+</style>
