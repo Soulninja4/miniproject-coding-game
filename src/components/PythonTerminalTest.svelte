@@ -49,7 +49,7 @@
 
 
 <div class="relative bottom-0 left-0 w-full h-1/3">
-  <div class="h-[70vh]">hi</div>
+  <!-- <div class="h-[70vh]">hi</div> -->
   <CodeMirror
     bind:value
     theme={oneDark}
@@ -57,6 +57,7 @@
       "&": {
         width: "100%",
         height: "30vh",
+        
       },
     }}
   />

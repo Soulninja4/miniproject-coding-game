@@ -2,17 +2,16 @@
   import PythonTerminalTest from "../components/PythonTerminalTest.svelte";
   import PythonTerminal from "../components/PythonTerminal.svelte";
   import { onMount, tick } from "svelte";
-  // import sprite from "../components/spriteclass.js"
 
-  const width = screen.width * 0.9;
-  const height = (screen.height * 2) / 3 - 95;
+  const width = screen.width * 0.95;
+  const height = (screen.height * 2) / 3;
   let canvas, ctx;
-  const gravity = 0.02;
+  const gravity = 0.08;
 
-
+  let myObject, objimg;
 
   class sprite {
-    constructor (position, size) {
+    constructor (position, size, spt=NaN) {
       this.position = {
         x: screen.width - width + position[0],
         y: position[1],
@@ -25,7 +24,7 @@
       }
     
 
-      this.spriteImg = NaN;
+      this.spriteImg = spt;
       this.gravity = true;
       this.onGround = false;
     }
@@ -52,17 +51,20 @@
     draw() {
       ctx.beginPath();
       ctx.moveTo(this.position.x, this.position.y);
-      // if (this.spriteImg === NaN) 
-      // {
+      // console.log(this.spriteImg);
+
+      if (typeof(this.spriteImg) == 'number') 
+      {
         ctx.fillStyle = "red";
         ctx.fillRect(this.position.x + this.width / 2 , this.position.y + this.height / 2, this.width, this.height);
-        console.log(this.spriteImg);
-      // }
+        // console.log("not yo");
+      }
 
-      // else {
-      //   // ctx.drawImage(this.spriteImg, this.position.x, this.position.y)
-      //   console.log(this.spriteImg);
-      // }
+      else {
+        ctx.drawImage(this.spriteImg, this.position.x, this.position.y);
+        // ctx.drawImage()
+        // console.log("yo");
+      }
     }
 
     moveTo(coord) {
@@ -93,8 +95,14 @@
     ctx = canvas.getContext("2d");
     canvas.width = width;
     canvas.height = height;
+
+    
+    objimg = document.querySelector("#playimg");
+    console.log(objimg);
+    myObject = new sprite([100,100],[30,30], objimg);
+
     await tick();
-    animate();
+    setTimeout(animate(),1000);
     console.log(width, height);
     myObject.setSpeedX(1);
     myObject.setSpeedY(-2);
@@ -103,7 +111,6 @@
   });
 
 
-  let myObject = new sprite([100,100],[75,100]);
 
   function animate() {
     window.requestAnimationFrame(animate);
@@ -115,11 +122,19 @@
   // setTimeout(()=> {myObject.moveTo([0,0])}, 5000);
   setTimeout(()=> {myObject.setSpeedY(-3);}, 4000);
   setTimeout(()=> {myObject.setSpeedX(0);}, 8000);
+
 </script>
 
-<body>
+<body class="bg-teal-500">
   <canvas id="gameCanvas" />
   <PythonTerminalTest />
+
+    <img id="playimg" src="src\assets\Hulk2.jpg" width="30" height="50" alt="" />
+
+  <!-- <div id="hello">hello</div> -->
+  
 </body>
+
+
 
 
