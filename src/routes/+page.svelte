@@ -4,7 +4,7 @@
   import { onMount, tick } from "svelte";
 
   const width = screen.width * 0.95;
-  const height = (screen.height * 2) / 3;
+  const height = (screen.height * 0.7);
   let canvas, ctx;
   const gravity = 0.08;
 
@@ -32,8 +32,8 @@
     update() {   
       this.draw();
 
-      if (this.position.y + this.height*3/2 > height) {
-        this.position.y = height - this.height*3/2;
+      if (this.position.y + this.height > height) {
+        this.position.y = height - this.height;
         this.onGround = true;
       }
       if (this.onGround) 
@@ -99,7 +99,7 @@
     
     objimg = document.querySelector("#playimg");
     console.log(objimg);
-    myObject = new sprite([100,100],[30,30], objimg);
+    myObject = new sprite([100,100],[113,200], objimg);
 
     await tick();
     setTimeout(animate(),1000);
@@ -129,9 +129,7 @@
   <canvas id="gameCanvas" />
   <PythonTerminalTest />
 
-    <img id="playimg" src="src\assets\Hulk2.jpg" width="30" height="50" alt="" />
-
-  <!-- <div id="hello">hello</div> -->
+    <img id="playimg" src="src\assets\Hulk.jpg" alt="" class="hidden"/>
   
 </body>
 
