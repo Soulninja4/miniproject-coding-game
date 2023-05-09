@@ -1,11 +1,16 @@
 <script>
   import Sk from "skulpt";
-  // output functions are configurable.  This one just appends some text
-  // to a pre element.
+  import CodeMirror from "svelte-codemirror-editor";
+  import { oneDark } from "@codemirror/theme-one-dark";
+
+  // import { EditorView } from "@codemirror/view";
+
+  let value = "";
   function outf(text) {
     var mypre = document.getElementById("output");
     mypre.innerHTML = mypre.innerHTML + text;
   }
+
   function builtinRead(x) {
     if (
       Sk.builtinFiles === undefined ||
@@ -21,7 +26,7 @@
   // configure the output function
   // call Sk.importMainWithBody()
   function runit() {
-    var prog = document.getElementById("code-editor").value;
+    var prog = value;
     var mypre = document.getElementById("output");
     mypre.innerHTML = "";
     Sk.pre = "output";
@@ -41,26 +46,22 @@
   }
 </script>
 
-<body>
-  <form>
-    <textarea
-      id="code-editor"
-      cols="40"
-      rows="10"
-      class="w-full h-1/3 bg-gray-900 text-white p-4"
-      >print('test')
-    </textarea><br />
-    <button type="button" on:click={runit}>Vedi</button>
-  </form>
+<div class="relative bottom-0 left-0 w-full h-1/3">
+  <!-- <div class="h-[70vh]">hi</div> -->
+  <CodeMirror
+    bind:value
+    theme={oneDark}
+    styles={{
+      "&": {
+        width: "100%",
+        height: "30vh",
+      },
+    }}
+  />
+  <button
+    class=" absolute bottom-0 right-5 text-white z-10"
+    type="button"
+    on:click={runit}>Submit</button
+  >
   <pre id="output" />
-</body>
-
-<style>
-  #code-editor {
-    font-family: "Fira Code", monospace;
-    font-size: 16px;
-    line-height: 1.5;
-    border: none;
-    border-radius: 0;
-  }
-</style>
+</div>
