@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from "svelte";
 
   const width = screen.width;
-  const height = screen.height * 0.7;
+  const height = screen.height * 0.65;
 
   class Sprite {
     constructor({

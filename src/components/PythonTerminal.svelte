@@ -54,7 +54,7 @@
     styles={{
       "&": {
         width: "100%",
-        height: "30vh",
+        height: "24vh",
       },
     }}
   />
