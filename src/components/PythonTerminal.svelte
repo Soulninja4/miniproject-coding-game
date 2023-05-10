@@ -1,3 +1,7 @@
+<script context="module">
+  export let outputText = "";
+</script>
+
 <script>
   import Sk from "skulpt";
   import CodeMirror from "svelte-codemirror-editor";
@@ -7,8 +11,7 @@
 
   let value = "";
   function outf(text) {
-    var mypre = document.getElementById("output");
-    mypre.innerHTML = mypre.innerHTML + text;
+    outputText = text;
   }
 
   function builtinRead(x) {
@@ -35,12 +38,15 @@
     var myPromise = Sk.misceval.asyncToPromise(function () {
       return Sk.importMainWithBody("<stdin>", false, prog, true);
     });
-    myPromise.then(
+    value = "";
+    return myPromise.then(
       function (mod) {
         console.log("success");
+        return outputText;
       },
       function (err) {
         console.log(err.toString());
+        return outputText;
       }
     );
   }

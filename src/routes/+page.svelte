@@ -1,5 +1,7 @@
 <script>
-  import PythonTerminal from "../components/PythonTerminal.svelte";
+  import PythonTerminal, {
+    outputText,
+  } from "../components/PythonTerminal.svelte";
   import { onMount, onDestroy } from "svelte";
 
   const width = screen.width;
@@ -71,6 +73,63 @@
       this.velocity = velocity;
     }
 
+    speak(text) {
+      const bubblePadding = 10;
+      const bubbleMargin = 5;
+
+      // Set styles for the speech bubble
+      c.fillStyle = "white";
+      c.strokeStyle = "black";
+      c.font = "20px Arial";
+
+      // Measure the width and height of the text
+      const textWidth = c.measureText(text).width;
+      const textHeight = parseInt(c.font, 10); // Assumes font size is set
+
+      // Calculate the speech bubble dimensions
+      const bubbleWidth = textWidth + bubblePadding * 2;
+      const bubbleHeight = textHeight + bubblePadding * 2;
+
+      // Calculate the speech bubble position
+      const bubbleX = this.position.x + this.image.width / 2;
+      const bubbleY = this.position.y;
+
+      // Draw the speech bubble
+      c.beginPath();
+      c.moveTo(bubbleX + bubbleMargin, bubbleY);
+      c.lineTo(bubbleX + bubbleWidth - bubbleMargin, bubbleY);
+      c.quadraticCurveTo(
+        bubbleX + bubbleWidth,
+        bubbleY,
+        bubbleX + bubbleWidth,
+        bubbleY + bubbleMargin
+      );
+      c.lineTo(bubbleX + bubbleWidth, bubbleY + bubbleHeight - bubbleMargin);
+      c.quadraticCurveTo(
+        bubbleX + bubbleWidth,
+        bubbleY + bubbleHeight,
+        bubbleX + bubbleWidth - bubbleMargin,
+        bubbleY + bubbleHeight
+      );
+      c.lineTo(bubbleX + bubbleMargin, bubbleY + bubbleHeight);
+      c.quadraticCurveTo(
+        bubbleX,
+        bubbleY + bubbleHeight,
+        bubbleX,
+        bubbleY + bubbleHeight - bubbleMargin
+      );
+      c.lineTo(bubbleX, bubbleY + bubbleMargin);
+      c.quadraticCurveTo(bubbleX, bubbleY, bubbleX + bubbleMargin, bubbleY);
+      c.closePath();
+
+      c.fill();
+      c.stroke();
+
+      // Draw the text inside the speech bubble
+      c.fillStyle = "black";
+      c.fillText(text, bubbleX + bubblePadding, bubbleY + bubblePadding * 2);
+    }
+
     update() {
       this.draw();
       this.position.x += this.velocity.x;
@@ -87,14 +146,14 @@
     scale: 1.47,
   });
 
-  const monster = new Monster({
+  let monster = new Monster({
     position: {
-      x: 0,
-      y: 0,
+      x: 1800,
+      y: 525,
     },
     imageSrc: "src/assets/enemies/1.png",
     velocity: {
-      x: 5,
+      x: -0.5,
       y: 0,
     },
   });
@@ -116,6 +175,10 @@
       c.fillStyle = "rgba(255, 255, 255, 0)";
       c.fillRect(0, 0, canvas.width, canvas.height);
       monster.update();
+      monster.speak(outputText);
+      if (outputText === "test") {
+        console.log("first");
+      }
     }
     animate();
   });
