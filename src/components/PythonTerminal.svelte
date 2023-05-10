@@ -1,17 +1,18 @@
-<script context="module">
+<!-- <script context="module">
   export let outputText = "";
-</script>
+</script> -->
 
 <script>
   import Sk from "skulpt";
   import CodeMirror from "svelte-codemirror-editor";
   import { oneDark } from "@codemirror/theme-one-dark";
+  import { outputText } from "./stores";
 
   // import { EditorView } from "@codemirror/view";
 
   let value = "";
   function outf(text) {
-    outputText = text;
+    outputText.set(text);
   }
 
   function builtinRead(x) {

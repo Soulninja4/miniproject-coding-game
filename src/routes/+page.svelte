@@ -1,8 +1,7 @@
 <script>
-  import PythonTerminal, {
-    outputText,
-  } from "../components/PythonTerminal.svelte";
+  import PythonTerminal from "../components/PythonTerminal.svelte";
   import { onMount, onDestroy } from "svelte";
+  import { outputText } from "../components/stores";
 
   const width = screen.width;
   const height = screen.height * 0.65;
@@ -71,6 +70,19 @@
       });
 
       this.velocity = velocity;
+    }
+
+    kill(text) {
+      // console.log("first");
+      if (text === "test") {
+        console.log("first");
+        // Remove the reference to the Monster object
+        this.velocity = null;
+        this.position = null;
+        this.image = null;
+        this.draw = null;
+        this.speak = null;
+      }
     }
 
     speak(text) {
@@ -146,7 +158,7 @@
     scale: 1.47,
   });
 
-  let monster = new Monster({
+  const monster = new Monster({
     position: {
       x: 1800,
       y: 525,
@@ -159,14 +171,21 @@
   });
 
   let canvas, c;
+  let answer = "";
 
   onMount(() => {
+    outputText.subscribe((value) => {
+      answer = value;
+    });
     canvas = document.getElementById("gameCanvas");
     canvas.width = width;
     canvas.height = height;
     c = canvas.getContext("2d");
 
     function animate() {
+      if (answer === "test") {
+        console.log("correct");
+      }
       window.requestAnimationFrame(animate);
       c.fillStyle = "black";
       c.fillRect(0, 0, canvas.width, canvas.height);
@@ -175,10 +194,8 @@
       c.fillStyle = "rgba(255, 255, 255, 0)";
       c.fillRect(0, 0, canvas.width, canvas.height);
       monster.update();
-      monster.speak(outputText);
-      if (outputText === "test") {
-        console.log("first");
-      }
+      monster.speak(answer);
+      console.log(answer);
     }
     animate();
   });
