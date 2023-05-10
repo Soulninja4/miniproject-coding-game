@@ -2,6 +2,7 @@
   import PythonTerminal from "../components/PythonTerminal.svelte";
   import { onMount, onDestroy } from "svelte";
   import { outputText } from "../components/stores";
+  import { convertEncoding, compareStringEncoding } from "../components/utils";
 
   const width = screen.width;
   const height = screen.height * 0.65;
@@ -171,21 +172,14 @@
   });
 
   let canvas, c;
-  let answer = "";
 
   onMount(() => {
-    outputText.subscribe((value) => {
-      answer = value;
-    });
     canvas = document.getElementById("gameCanvas");
     canvas.width = width;
     canvas.height = height;
     c = canvas.getContext("2d");
 
     function animate() {
-      if (answer === "test") {
-        console.log("correct");
-      }
       window.requestAnimationFrame(animate);
       c.fillStyle = "black";
       c.fillRect(0, 0, canvas.width, canvas.height);
@@ -194,8 +188,8 @@
       c.fillStyle = "rgba(255, 255, 255, 0)";
       c.fillRect(0, 0, canvas.width, canvas.height);
       monster.update();
-      monster.speak(answer);
-      console.log(answer);
+      monster.speak($outputText);
+      monster.kill($outputText);
     }
     animate();
   });

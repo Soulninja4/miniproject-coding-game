@@ -12,7 +12,9 @@
 
   let value = "";
   function outf(text) {
-    outputText.set(text);
+    var mypre = document.getElementById("output");
+    mypre.innerHTML = text;
+    outputText.set(mypre.innerHTML.trim());
   }
 
   function builtinRead(x) {
