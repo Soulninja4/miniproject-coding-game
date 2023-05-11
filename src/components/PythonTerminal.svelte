@@ -7,14 +7,13 @@
   import CodeMirror from "svelte-codemirror-editor";
   import { oneDark } from "@codemirror/theme-one-dark";
   import { outputText } from "./stores";
+  import { onMount } from "svelte";
 
   // import { EditorView } from "@codemirror/view";
 
   let value = "";
   function outf(text) {
-    var mypre = document.getElementById("output");
-    mypre.innerHTML = text;
-    outputText.set(mypre.innerHTML.trim());
+    outputText.set(text.trim().toString());
   }
 
   function builtinRead(x) {
@@ -53,6 +52,19 @@
       }
     );
   }
+  onMount(() => {
+    document.addEventListener("keydown", function (event) {
+      if (
+        event.ctrlKey &&
+        (event.key === "c" ||
+          event.key === "C" ||
+          event.key === "v" ||
+          event.key === "V")
+      ) {
+        event.preventDefault(); // Prevent Ctrl+C and Ctrl+V
+      }
+    });
+  });
 </script>
 
 <div class="relative bottom-0 left-0 w-full h-1/3">
@@ -68,7 +80,7 @@
     }}
   />
   <button
-    class=" absolute bottom-0 right-5 text-white z-10"
+    class=" absolute bottom-10 right-5 text-white z-10 bg-gray-800 rounded-md hover:bg-gray-700 px-4 py-2"
     type="button"
     on:click={runit}>Submit</button
   >

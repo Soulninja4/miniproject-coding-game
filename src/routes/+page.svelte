@@ -1,11 +1,30 @@
 <script>
   import PythonTerminal from "../components/PythonTerminal.svelte";
+  import Tutorial from "../components/Tutorial.svelte";
   import { onMount, onDestroy } from "svelte";
   import { outputText } from "../components/stores";
   import { convertEncoding, compareStringEncoding } from "../components/utils";
-
   const width = screen.width;
   const height = screen.height * 0.65;
+  let gameState = "playing";
+  let level = "1";
+
+  let leftDome = 700;
+  let rightDome = 1000;
+
+  let hp = 100;
+
+  let currentPage = 1;
+  const totalPages = 3;
+
+  function onNextPage() {
+    if (currentPage !== totalPages) {
+      currentPage++;
+    } else {
+      gameState = "playing";
+      currentPage = 1;
+    }
+  }
 
   class Sprite {
     constructor({
@@ -63,30 +82,99 @@
     }
   }
 
-  class Monster extends Sprite {
-    constructor({ position, velocity, imageSrc }) {
+  class Dome extends Sprite {
+    constructor({ position, imageSrc, scale }) {
       super({
         position,
         imageSrc,
+        scale,
       });
-
-      this.velocity = velocity;
     }
-
-    kill(text) {
-      // console.log("first");
-      if (text === "test") {
-        console.log("first");
-        // Remove the reference to the Monster object
-        this.velocity = null;
-        this.position = null;
-        this.image = null;
-        this.draw = null;
-        this.speak = null;
+    checkHealth() {
+      switch (true) {
+        case hp <= 0:
+          this.image.src = "src/assets/dome/domedead.png";
+          break;
+        case hp < 30:
+          this.image.src = "src/assets/dome/dome2.png";
+          break;
+        case hp < 60:
+          this.image.src = "src/assets/dome/dome1.png";
+          break;
+        case hp <= 100:
+          this.image.src = "src/assets/dome/dome0.png";
+          break;
       }
     }
 
-    speak(text) {
+    update() {
+      this.checkHealth();
+      this.draw();
+    }
+  }
+
+  class Monster extends Sprite {
+    constructor({ position, velocity, imageSrc, key = "undefined", scale }) {
+      super({
+        position,
+        imageSrc,
+        scale,
+      });
+
+      this.velocity = velocity;
+      this.isVisible = true;
+      this.isDead = false;
+      this.key = key;
+    }
+    toggleVisibility() {
+      this.isVisible = !this.isVisible;
+    }
+
+    hide() {
+      this.isVisible = false;
+    }
+
+    blinkAndDisappear() {
+      if (this.isDead) return;
+      const blinkDuration = 100; // Duration of each blink (in milliseconds)
+      const totalBlinks = 10; // Number of blinks
+      let blinkCount = 0;
+
+      const blinkInterval = setInterval(() => {
+        if (blinkCount < totalBlinks) {
+          this.toggleVisibility(); // Toggle sprite visibility (implement the `toggleVisibility()` method accordingly)
+          blinkCount++;
+        } else {
+          clearInterval(blinkInterval);
+          this.hide(); // Hide the sprite (implement the `hide()` method accordingly)
+        }
+      }, blinkDuration);
+    }
+
+    kill(text) {
+      if (text === this.key) {
+        this.blinkAndDisappear();
+        this.isDead = true;
+      }
+    }
+
+    attack() {
+      if (this.isDead) return;
+      if (this.velocity.x > 0) {
+        if (this.position.x + this.width >= leftDome) {
+          this.velocity.x = 0;
+          hp -= 0.2;
+        }
+      } else {
+        if (this.position.x <= rightDome) {
+          this.velocity.x = 0;
+          hp -= 0.2;
+        }
+      }
+    }
+
+    speak() {
+      if (this.isDead) return;
       const bubblePadding = 10;
       const bubbleMargin = 5;
 
@@ -96,7 +184,7 @@
       c.font = "20px Arial";
 
       // Measure the width and height of the text
-      const textWidth = c.measureText(text).width;
+      const textWidth = c.measureText(this.key).width;
       const textHeight = parseInt(c.font, 10); // Assumes font size is set
 
       // Calculate the speech bubble dimensions
@@ -104,8 +192,8 @@
       const bubbleHeight = textHeight + bubblePadding * 2;
 
       // Calculate the speech bubble position
-      const bubbleX = this.position.x + this.image.width / 2;
-      const bubbleY = this.position.y;
+      const bubbleX = this.position.x + 20;
+      const bubbleY = this.position.y - 20;
 
       // Draw the speech bubble
       c.beginPath();
@@ -140,13 +228,21 @@
 
       // Draw the text inside the speech bubble
       c.fillStyle = "black";
-      c.fillText(text, bubbleX + bubblePadding, bubbleY + bubblePadding * 2);
+      c.fillText(
+        this.key,
+        bubbleX + bubblePadding,
+        bubbleY + bubblePadding * 2
+      );
     }
 
     update() {
-      this.draw();
-      this.position.x += this.velocity.x;
-      this.position.y += this.velocity.y;
+      // if (this.isDead) return;
+      if (this.isVisible) {
+        this.draw();
+        this.attack();
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+      }
     }
   }
 
@@ -159,7 +255,26 @@
     scale: 1.47,
   });
 
-  const monster = new Monster({
+  const foreground = new Sprite({
+    position: {
+      x: 0,
+      y: 0,
+    },
+    imageSrc: "src/assets/fg.png",
+    scale: 1.47,
+  });
+
+  const dome = new Dome({
+    position: {
+      x: 0,
+      y: 0,
+    },
+    imageSrc: "src/assets/dome/dome0.png",
+    scale: 1.47,
+  });
+
+  // LEVEL 1 MONSTERS
+  const level1monster1 = new Monster({
     position: {
       x: 1800,
       y: 525,
@@ -169,6 +284,46 @@
       x: -0.5,
       y: 0,
     },
+    key: "Hello, World!",
+  });
+
+  const level1monster2 = new Monster({
+    position: {
+      x: -300,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/2.png",
+    velocity: {
+      x: 0.5,
+      y: 0,
+    },
+    key: "723",
+  });
+
+  const level1monster3 = new Monster({
+    position: {
+      x: -600,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/1.png",
+    velocity: {
+      x: 0.5,
+      y: 0,
+    },
+    key: "How will you handle us",
+  });
+
+  const level1monster4 = new Monster({
+    position: {
+      x: 2400,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/1.png",
+    velocity: {
+      x: -0.5,
+      y: 0,
+    },
+    key: "At the same time!",
   });
 
   let canvas, c;
@@ -181,21 +336,42 @@
 
     function animate() {
       window.requestAnimationFrame(animate);
-      c.fillStyle = "black";
-      c.fillRect(0, 0, canvas.width, canvas.height);
+      if (gameState == "playing") {
+        c.fillStyle = "black";
+        c.fillRect(0, 0, canvas.width, canvas.height);
 
-      background.update();
-      c.fillStyle = "rgba(255, 255, 255, 0)";
-      c.fillRect(0, 0, canvas.width, canvas.height);
-      monster.update();
-      monster.speak($outputText);
-      monster.kill($outputText);
+        background.update();
+        foreground.update();
+        dome.update();
+        c.fillStyle = "rgba(255, 255, 255, 0)";
+        c.fillRect(0, 0, canvas.width, canvas.height);
+        if (level == "1") {
+          level1monster1.update();
+          level1monster2.update();
+          level1monster3.update();
+          level1monster4.update();
+
+          level1monster1.speak($outputText);
+          level1monster2.speak($outputText);
+          level1monster3.speak($outputText);
+          level1monster4.speak($outputText);
+
+          level1monster1.kill($outputText);
+          level1monster2.kill($outputText);
+          level1monster3.kill($outputText);
+          level1monster4.kill($outputText);
+        }
+      } else if (gameState == "tutorial") {
+      }
     }
     animate();
   });
 </script>
 
 <body class="bg-teal-500">
-  <canvas id="gameCanvas" />
+  <div id="gameContainer">
+    <Tutorial {currentPage} {totalPages} {onNextPage} {gameState} />
+    <canvas id="gameCanvas" />
+  </div>
   <PythonTerminal />
 </body>
