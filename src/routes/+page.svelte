@@ -11,8 +11,9 @@
   let gameState = "menu";
   let level = 3;
 
-  let leftDome = 700;
-  let rightDome = 1000;
+  let leftDome = 500;
+  let rightDome = 740;
+  let floor = 375;
 
   let hp = 100;
 
@@ -204,12 +205,12 @@
       if (this.velocity.x > 0) {
         if (this.position.x + this.width >= leftDome) {
           this.velocity.x = 0;
-          hp -= 1;
+          hp -= 0.5;
         }
       } else {
         if (this.position.x <= rightDome) {
           this.velocity.x = 0;
-          hp -= 1;
+          hp -= 0.5;
         }
       }
     }
@@ -301,7 +302,7 @@
       y: 0,
     },
     imageSrc: "src/assets/bg.png",
-    scale: 1.47,
+    scale: 1.1,
   });
 
   const foreground = new Sprite({
@@ -310,7 +311,7 @@
       y: 0,
     },
     imageSrc: "src/assets/fg.png",
-    scale: 1.47,
+    scale: 1.1,
   });
 
   const dome = new Dome({
@@ -319,14 +320,14 @@
       y: 0,
     },
     imageSrc: "src/assets/dome/dome0.png",
-    scale: 1.47,
+    scale: 1.1,
   });
 
   // LEVEL 1 MONSTERS
   const level1monster1 = new Monster({
     position: {
-      x: 1800,
-      y: 525,
+      x: 1000,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/1.png",
     velocity: {
@@ -339,7 +340,7 @@
   const level1monster2 = new Monster({
     position: {
       x: -300,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/6.png",
     velocity: {
@@ -352,7 +353,7 @@
   const level1monster3 = new Monster({
     position: {
       x: -650,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/5.png",
     velocity: {
@@ -364,8 +365,8 @@
 
   const level1monster4 = new Monster({
     position: {
-      x: 2400,
-      y: 525,
+      x: 2000,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/1.png",
     velocity: {
@@ -377,8 +378,8 @@
 
   const level2monster1 = new Monster({
     position: {
-      x: 1800,
-      y: 525,
+      x: 1500,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/3.png",
     velocity: {
@@ -393,8 +394,8 @@
 
   const level2monster2 = new Monster({
     position: {
-      x: 2100,
-      y: 525,
+      x: 1600,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/3.png",
     velocity: {
@@ -412,7 +413,7 @@ How will you write this fast 5 times???`,
   const level2monster3 = new Monster({
     position: {
       x: -100,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/7.png",
     velocity: {
@@ -430,7 +431,7 @@ How will you write this fast 5 times???`,
   const level2monster4 = new Monster({
     position: {
       x: -500,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/8.png",
     velocity: {
@@ -444,7 +445,7 @@ How will you write this fast 5 times???`,
   const level3monster1 = new Monster({
     position: {
       x: -50,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/5.png",
     velocity: {
@@ -457,12 +458,12 @@ How will you write this fast 5 times???`,
 
   const level3monster2 = new Monster({
     position: {
-      x: 1850,
-      y: 525,
+      x: 1366,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/2.png",
     velocity: {
-      x: -0.2,
+      x: -0.1,
       y: 0,
     },
     key: `dict['brand'] = Apple
@@ -473,12 +474,12 @@ dict['price']: 999.99`,
 
   const level3monster3 = new Monster({
     position: {
-      x: 2100,
-      y: 525,
+      x: -400,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/3.png",
     velocity: {
-      x: -0.4,
+      x: 0.4,
       y: 0,
     },
     key: `city_list[1] = London
@@ -488,8 +489,8 @@ city_list[3] = Tokyo`,
 
   const level3monster4 = new Monster({
     position: {
-      x: 2400,
-      y: 525,
+      x: 1500,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/4.png",
     velocity: {
@@ -503,7 +504,7 @@ city_list[3] = Tokyo`,
   const level3monster5 = new Monster({
     position: {
       x: -500,
-      y: 525,
+      y: floor,
     },
     imageSrc: "src/assets/enemies/8.png",
     velocity: {
