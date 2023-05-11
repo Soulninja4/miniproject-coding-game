@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'pressstart': ["'Press Start 2P'", 'cursive']
+      },
+    },
   },
   plugins: [],
 }

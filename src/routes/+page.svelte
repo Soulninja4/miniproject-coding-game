@@ -1,13 +1,15 @@
 <script>
   import PythonTerminal from "../components/PythonTerminal.svelte";
   import Tutorial from "../components/Tutorial.svelte";
+  import Menu from "../components/Menu.svelte";
+  import Levels from "../components/Levels.svelte";
   import { onMount, onDestroy } from "svelte";
   import { outputText } from "../components/stores";
   import { convertEncoding, compareStringEncoding } from "../components/utils";
   const width = screen.width;
   const height = screen.height * 0.65;
-  let gameState = "tutorial1";
-  let level = "1";
+  let gameState = "menu";
+  let level = 3;
 
   let leftDome = 700;
   let rightDome = 1000;
@@ -16,6 +18,30 @@
 
   let currentPage = 1;
   const totalPages = 3;
+
+  function handleStart() {
+    gameState = "tutorial1";
+    level = 1;
+  }
+
+  function handleChooseLevel() {
+    gameState = "choosing";
+  }
+
+  function onLevel1() {
+    gameState = "tutorial1";
+    level = 1;
+  }
+
+  function onLevel2() {
+    gameState = "tutorial2";
+    level = 2;
+  }
+
+  function onLevel3() {
+    gameState = "tutorial3";
+    level = 3;
+  }
 
   function onNextPage() {
     if (currentPage !== totalPages) {
@@ -26,6 +52,9 @@
     }
   }
 
+  function goToMenu() {
+    gameState = "menu";
+  }
   class Sprite {
     constructor({
       position,
@@ -114,7 +143,14 @@
   }
 
   class Monster extends Sprite {
-    constructor({ position, velocity, imageSrc, key = "undefined", scale }) {
+    constructor({
+      position,
+      velocity,
+      imageSrc,
+      key = "undefined",
+      answer = "undefined",
+      scale,
+    }) {
       super({
         position,
         imageSrc,
@@ -125,6 +161,11 @@
       this.isVisible = true;
       this.isDead = false;
       this.key = key;
+      if (answer == "undefined") {
+        this.hiddenAnswer = key;
+      } else {
+        this.hiddenAnswer = answer;
+      }
     }
     toggleVisibility() {
       this.isVisible = !this.isVisible;
@@ -152,7 +193,7 @@
     }
 
     kill(text) {
-      if (text === this.key) {
+      if (text === this.hiddenAnswer) {
         this.blinkAndDisappear();
         this.isDead = true;
       }
@@ -163,12 +204,12 @@
       if (this.velocity.x > 0) {
         if (this.position.x + this.width >= leftDome) {
           this.velocity.x = 0;
-          hp -= 0.2;
+          hp -= 1;
         }
       } else {
         if (this.position.x <= rightDome) {
           this.velocity.x = 0;
-          hp -= 0.2;
+          hp -= 1;
         }
       }
     }
@@ -181,11 +222,17 @@
       // Set styles for the speech bubble
       c.fillStyle = "white";
       c.strokeStyle = "black";
-      c.font = "20px Arial";
+      c.font = "20px Roboto";
+
+      // Split the text into lines if there's a \n character
+      const lines = this.key.split("\n");
+      const lineCount = lines.length;
 
       // Measure the width and height of the text
-      const textWidth = c.measureText(this.key).width;
-      const textHeight = parseInt(c.font, 10); // Assumes font size is set
+      const textWidth = Math.max(
+        ...lines.map((line) => c.measureText(line).width)
+      );
+      const textHeight = parseInt(c.font, 10) * lineCount; // Assumes font size is set
 
       // Calculate the speech bubble dimensions
       const bubbleWidth = textWidth + bubblePadding * 2;
@@ -193,7 +240,7 @@
 
       // Calculate the speech bubble position
       const bubbleX = this.position.x + 20;
-      const bubbleY = this.position.y - 20;
+      const bubbleY = this.position.y - bubbleHeight + 50;
 
       // Draw the speech bubble
       c.beginPath();
@@ -228,11 +275,13 @@
 
       // Draw the text inside the speech bubble
       c.fillStyle = "black";
-      c.fillText(
-        this.key,
-        bubbleX + bubblePadding,
-        bubbleY + bubblePadding * 2
-      );
+      lines.forEach((line, index) => {
+        c.fillText(
+          line,
+          bubbleX + bubblePadding,
+          bubbleY + bubblePadding * 2 + index * parseInt(c.font, 10)
+        );
+      });
     }
 
     update() {
@@ -292,7 +341,7 @@
       x: -300,
       y: 525,
     },
-    imageSrc: "src/assets/enemies/2.png",
+    imageSrc: "src/assets/enemies/6.png",
     velocity: {
       x: 0.5,
       y: 0,
@@ -302,10 +351,10 @@
 
   const level1monster3 = new Monster({
     position: {
-      x: -600,
+      x: -650,
       y: 525,
     },
-    imageSrc: "src/assets/enemies/1.png",
+    imageSrc: "src/assets/enemies/5.png",
     velocity: {
       x: 0.5,
       y: 0,
@@ -326,6 +375,145 @@
     key: "At the same time!",
   });
 
+  const level2monster1 = new Monster({
+    position: {
+      x: 1800,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/3.png",
+    velocity: {
+      x: -0.3,
+      y: 0,
+    },
+    key: `3
+3
+3`,
+    answer: "3",
+  });
+
+  const level2monster2 = new Monster({
+    position: {
+      x: 2100,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/3.png",
+    velocity: {
+      x: -0.3,
+      y: 0,
+    },
+    key: `How will you write this fast 5 times???
+How will you write this fast 5 times???
+How will you write this fast 5 times???
+How will you write this fast 5 times???
+How will you write this fast 5 times???`,
+    answer: "How will you write this fast 5 times???",
+  });
+
+  const level2monster3 = new Monster({
+    position: {
+      x: -100,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/7.png",
+    velocity: {
+      x: 0.4,
+      y: 0,
+    },
+    key: `0
+1
+2
+3
+4`,
+    answer: "4",
+  });
+
+  const level2monster4 = new Monster({
+    position: {
+      x: -500,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/8.png",
+    velocity: {
+      x: 2,
+      y: 0,
+    },
+    key: `1`,
+    answer: "1",
+  });
+
+  const level3monster1 = new Monster({
+    position: {
+      x: -50,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/5.png",
+    velocity: {
+      x: 0.5,
+      y: 0,
+    },
+    key: `list[0] = one`,
+    answer: "one",
+  });
+
+  const level3monster2 = new Monster({
+    position: {
+      x: 1850,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/2.png",
+    velocity: {
+      x: -0.2,
+      y: 0,
+    },
+    key: `dict['brand'] = Apple
+dict['model'] = iPhone 12,
+dict['price']: 999.99`,
+    answer: "999.99",
+  });
+
+  const level3monster3 = new Monster({
+    position: {
+      x: 2100,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/3.png",
+    velocity: {
+      x: -0.4,
+      y: 0,
+    },
+    key: `city_list[1] = London
+city_list[3] = Tokyo`,
+    answer: "Tokyo",
+  });
+
+  const level3monster4 = new Monster({
+    position: {
+      x: 2400,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/4.png",
+    velocity: {
+      x: -0.2,
+      y: 0,
+    },
+    key: `list[2][4] = Hello`,
+    answer: "Hello",
+  });
+
+  const level3monster5 = new Monster({
+    position: {
+      x: -500,
+      y: 525,
+    },
+    imageSrc: "src/assets/enemies/8.png",
+    velocity: {
+      x: 0.1,
+      y: 0,
+    },
+    key: `list[0]['fruits'][2] = banana`,
+    answer: "banana",
+  });
+
   let canvas, c;
 
   onMount(() => {
@@ -336,25 +524,36 @@
 
     function animate() {
       window.requestAnimationFrame(animate);
+      if (gameState == "over") {
+        dome.update();
+        foreground.update();
+        // level1monster1.hide();
+      }
       if (gameState == "playing") {
         c.fillStyle = "black";
         c.fillRect(0, 0, canvas.width, canvas.height);
 
+        if (hp === 0) {
+          gameState = "over";
+          dome.update();
+          foreground.update();
+        }
         background.update();
-        foreground.update();
         dome.update();
+        console.log(hp);
+        foreground.update();
         c.fillStyle = "rgba(255, 255, 255, 0)";
         c.fillRect(0, 0, canvas.width, canvas.height);
-        if (level == "1") {
+        if (level === 1) {
           level1monster1.update();
           level1monster2.update();
           level1monster3.update();
           level1monster4.update();
 
-          level1monster1.speak($outputText);
-          level1monster2.speak($outputText);
-          level1monster3.speak($outputText);
-          level1monster4.speak($outputText);
+          level1monster1.speak();
+          level1monster2.speak();
+          level1monster3.speak();
+          level1monster4.speak();
 
           level1monster1.kill($outputText);
           level1monster2.kill($outputText);
@@ -368,17 +567,90 @@
             level1monster4.isDead
           ) {
             gameState = "tutorial2";
+            level = 2;
+            hp = 100;
+          }
+        } else if (level === 2) {
+          level2monster1.update();
+          level2monster2.update();
+          level2monster3.update();
+          level2monster4.update();
+
+          level2monster1.speak();
+          level2monster2.speak();
+          level2monster3.speak();
+          level2monster4.speak();
+
+          level2monster1.kill($outputText);
+          level2monster2.kill($outputText);
+          level2monster3.kill($outputText);
+          level2monster4.kill($outputText);
+
+          if (
+            level2monster1.isDead &&
+            level2monster2.isDead &&
+            level2monster3.isDead &&
+            level2monster4.isDead
+          ) {
+            gameState = "tutorial3";
+            level = 3;
+            hp == 100;
+          }
+        } else if (level === 3) {
+          level3monster1.update();
+          level3monster2.update();
+          level3monster3.update();
+          level3monster4.update();
+          level3monster5.update();
+
+          level3monster1.speak();
+          level3monster2.speak();
+          level3monster3.speak();
+          level3monster4.speak();
+          level3monster5.speak();
+
+          level3monster1.kill($outputText);
+          level3monster2.kill($outputText);
+          level3monster3.kill($outputText);
+          level3monster4.kill($outputText);
+          level3monster5.kill($outputText);
+
+          if (
+            level3monster1.isDead &&
+            level2monster2.isDead &&
+            level2monster3.isDead &&
+            level2monster4.isDead &&
+            level2monster4.isDead
+          ) {
+            gameState = "over";
+            // level = 3;
           }
         }
-      } else {
       }
     }
     animate();
   });
 </script>
 
+<head>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+
 <body class="bg-teal-500">
   <div id="gameContainer">
+    {#if gameState === "over"}
+      <button
+        class="position absolute text-white rounded-lg px-4 py-2 mb-4 shadow-lg font-pressstart"
+        on:click={goToMenu}
+      >
+        Menu
+      </button>
+    {/if}
+    <Menu onStart={handleStart} onChooseLevel={handleChooseLevel} {gameState} />
+    <Levels {onLevel1} {onLevel2} {onLevel3} {gameState} />
     <Tutorial {currentPage} {totalPages} {onNextPage} {gameState} />
     <canvas id="gameCanvas" />
   </div>

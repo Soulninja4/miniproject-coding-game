@@ -14,6 +14,8 @@
   let value = "";
   function outf(text) {
     outputText.set(text.trim().toString());
+    // var mypre = document.getElementById("output");
+    // mypre.innerHTML = text.trim().toString();
   }
 
   function builtinRead(x) {
