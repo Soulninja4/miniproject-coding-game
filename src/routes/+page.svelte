@@ -6,7 +6,7 @@
   import { convertEncoding, compareStringEncoding } from "../components/utils";
   const width = screen.width;
   const height = screen.height * 0.65;
-  let gameState = "playing";
+  let gameState = "tutorial1";
   let level = "1";
 
   let leftDome = 700;
@@ -360,8 +360,17 @@
           level1monster2.kill($outputText);
           level1monster3.kill($outputText);
           level1monster4.kill($outputText);
+
+          if (
+            level1monster1.isDead &&
+            level1monster2.isDead &&
+            level1monster3.isDead &&
+            level1monster4.isDead
+          ) {
+            gameState = "tutorial2";
+          }
         }
-      } else if (gameState == "tutorial") {
+      } else {
       }
     }
     animate();

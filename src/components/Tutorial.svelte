@@ -6,7 +6,49 @@
   export let onNextPage;
   export let gameState;
 
-  const tutorialContent = [
+  const tutorialContent1 = [
+    {
+      imageSrc: "src/assets/tutorial/tutimage1.png",
+      text1: `Welcome to the world of programming!`,
+      text2: `In programming, a variable is a named container that stores information. It's like a labeled box where you can put different things. To create a variable, you give it a name and assign a value to it.`,
+      text3: `Variables store data and can be used to manipulate and update values during program execution. For example, "score" is a variable name assigned the value of 100, which can be changed as needed.`,
+    },
+    {
+      imageSrc: "src/assets/tutorial/tutimage2.png",
+      text1: `The print() function in programming displays output on the screen.`,
+      text2: `It is used to show messages, values, or variables during program execution.`,
+      text3: `For example: print("Hello, World!") will display "Hello, World!" on the screen.`,
+    },
+    {
+      imageSrc: "src/assets/tutorial/tutimage3.png",
+      text1: `Monsters are going to appear on screen, and you need to defeat them before they invade your dome`,
+      text2: `They all have a crucial weakness, which is displayed in the bubble above them.`,
+      text3: `Using what we have just shown you, display their weakness to destroy them by using the print() function.`,
+    },
+  ];
+
+  const tutorialContent2 = [
+    {
+      imageSrc: "src/assets/tutorial/1/tutimage1.png",
+      text1: `Welcome to the world of programming!`,
+      text2: `In programming, a variable is a named container that stores information. It's like a labeled box where you can put different things. To create a variable, you give it a name and assign a value to it.`,
+      text3: `Variables store data and can be used to manipulate and update values during program execution. For example, "score" is a variable name assigned the value of 100, which can be changed as needed.`,
+    },
+    {
+      imageSrc: "src/assets/tutorial/1/tutimage2.png",
+      text1: `The print() function in programming displays output on the screen.`,
+      text2: `It is used to show messages, values, or variables during program execution.`,
+      text3: `For example: print("Hello, World!") will display "Hello, World!" on the screen.`,
+    },
+    {
+      imageSrc: "src/assets/tutorial/1/tutimage3.png",
+      text1: `Monsters are going to appear on screen, and you need to defeat them before they invade your dome`,
+      text2: `They all have a crucial weakness, which is displayed in the bubble above them.`,
+      text3: `Using what we have just shown you, display their weakness to destroy them by using the print() function.`,
+    },
+  ];
+
+  const tutorialContent3 = [
     {
       imageSrc: "src/assets/tutorial/tutimage1.png",
       text1: `Welcome to the world of programming!`,
@@ -28,22 +70,74 @@
   ];
 </script>
 
-{#if gameState !== "playing" && currentPage <= totalPages}
+{#if gameState == "tutorial1" && currentPage <= totalPages}
   <div class="tutorial-container">
     <div class="tutorial-image">
       <!-- svelte-ignore a11y-img-redundant-alt -->
       <img
-        src={tutorialContent[currentPage - 1].imageSrc}
+        src={tutorialContent1[currentPage - 1].imageSrc}
         alt="Tutorial Image"
       />
     </div>
     <div class="tutorial-content">
       <div class="tutorial-text">
-        <p>{tutorialContent[currentPage - 1].text1}</p>
+        <p>{tutorialContent1[currentPage - 1].text1}</p>
         <br />
-        <p>{tutorialContent[currentPage - 1].text2}</p>
+        <p>{tutorialContent1[currentPage - 1].text2}</p>
         <br />
-        <p>{tutorialContent[currentPage - 1].text3}</p>
+        <p>{tutorialContent1[currentPage - 1].text3}</p>
+      </div>
+      {#if currentPage !== totalPages}
+        <button class="tutorial-button" on:click={onNextPage}>Next</button>
+      {:else}
+        <button class="tutorial-button" on:click={onNextPage}>Finish</button>
+      {/if}
+    </div>
+  </div>
+{/if}
+
+{#if gameState == "tutorial2" && currentPage <= totalPages}
+  <div class="tutorial-container">
+    <div class="tutorial-image">
+      <!-- svelte-ignore a11y-img-redundant-alt -->
+      <img
+        src={tutorialContent2[currentPage - 1].imageSrc}
+        alt="Tutorial Image"
+      />
+    </div>
+    <div class="tutorial-content">
+      <div class="tutorial-text">
+        <p>{tutorialContent2[currentPage - 1].text1}</p>
+        <br />
+        <p>{tutorialContent2[currentPage - 1].text2}</p>
+        <br />
+        <p>{tutorialContent2[currentPage - 1].text3}</p>
+      </div>
+      {#if currentPage !== totalPages}
+        <button class="tutorial-button" on:click={onNextPage}>Next</button>
+      {:else}
+        <button class="tutorial-button" on:click={onNextPage}>Finish</button>
+      {/if}
+    </div>
+  </div>
+{/if}
+
+{#if gameState == "tutorial3" && currentPage <= totalPages}
+  <div class="tutorial-container">
+    <div class="tutorial-image">
+      <!-- svelte-ignore a11y-img-redundant-alt -->
+      <img
+        src={tutorialContent3[currentPage - 1].imageSrc}
+        alt="Tutorial Image"
+      />
+    </div>
+    <div class="tutorial-content">
+      <div class="tutorial-text">
+        <p>{tutorialContent3[currentPage - 1].text1}</p>
+        <br />
+        <p>{tutorialContent3[currentPage - 1].text2}</p>
+        <br />
+        <p>{tutorialContent3[currentPage - 1].text3}</p>
       </div>
       {#if currentPage !== totalPages}
         <button class="tutorial-button" on:click={onNextPage}>Next</button>
